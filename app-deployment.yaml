@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-service
+  labels:
+    app: my-app-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app-service
+  template:
+    metadata:
+      labels:
+        app: my-app-service
+    spec:
+      containers:
+        - name: my-app
+          image: docker.io/kong/httpbin
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200M
+            requests:
+              cpu: 10m
+              memory: 50M
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+  labels:
+    app: my-app-service
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: my-app-service
